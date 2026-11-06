@@ -21,3 +21,12 @@ open ExoLean
 #print axioms Iso.rayleigh_lambda8_twin
 #print axioms Iso.not_powerRigid_rayleigh_lambda8
 #print axioms OpenProblems.temperature_identifiable_of_densityIdentifiable
+#print axioms expIntegralE1_strictAntiOn
+#print axioms Iso.transitRadiusE1_gauge_ne
+#print axioms Iso.transitRadiusE1_gauge_lt
+#print axioms referenceGaugeBrokenByE1
+#print axioms not_gaussianBandsPowerRigidUnrestricted
+#print axioms powerRigid_of_unique
+#print axioms gaussianBandsPowerRigid_of_unique
+#print axioms not_densityProfilesIdentifiable
+#print axioms not_densityProfilesIdentifiableCts_of_proportional

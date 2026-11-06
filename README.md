@@ -59,20 +59,16 @@ analytic layer. `hasDerivAt_pressure` proves that the pressure profile really so
 | `Iso.grey_temperature_unidentifiable` | Grey opacity: **every** `T' > 0` reproduces the flat spectrum exactly. |
 | `Iso.lecavelier_slope` | `dR_p/d ln λ = β H` for power-law opacity (Lecavelier des Etangs et al. 2008). |
 | `Iso.powerLaw_slope_degeneracy`, `Iso.slopeProduct_identifiable` | Free slope: `(T, β) ↦ (cT, β/c)` is exact, and only `βH` is identifiable. |
-| `Iso.scaleHeight_eq_of_powerRigid` | Multi-absorber reduction: if the opacity cone is **power-rigid**, then `H` is identifiable. The physics question becomes a pure-mathematics one. |
+| `Iso.scaleHeight_eq_of_powerRigid` | Multi-absorber reduction: if the opacity cone is **power-rigid** (no positive power `κ^r`, `r ≠ 1`, of a non-constant cone element is proportional to a cone element), then `H` is identifiable. The physics question becomes a pure-mathematics one. |
 | **`Iso.rayleigh_lambda8_twin`**, `Iso.not_powerRigid_rayleigh_lambda8` | Counterexample to "distinct cross-sections suffice": a pure `λ⁻⁴` Rayleigh scatterer at `T` and a pure `λ⁻⁸` absorber at `T/2` give identical spectra. |
 
-## Open targets for an AI prover (`ExoLean/OpenProblems.lean`)
+## Open targets: status
 
-These are stated as precise `Prop`s and are **not** asserted. A proof gives an identifiability
-theorem; a disproof gives a constructive degeneracy.
-
-1. `DensityProfilesIdentifiable σ Rtop S`: does the exact spectrum determine `n_i(r)`? This is
-   an Abel + Laplace inversion problem. The proved theorem
-   `temperature_identifiable_of_densityIdentifiable` shows that this, plus a closed
-   composition, gives full `T(r)` identifiability.
-2. `GaussianBandsPowerRigid`: are Gaussian bands with distinct centres power-rigid?
-3. `ReferenceGaugeBrokenByE1`: does keeping HK17's `E₁(τ₀)` term break the `(R0, P0)` gauge?
+| Target | Outcome | Key theorems |
+|---|---|---|
+| **3. `E₁` breaks the (R0, P0) gauge** | **Proved, for every admissible model.** The gauge shifts R_p by exactly `H·(E₁(τ₀e^{(R0−R0')/H}) − E₁(τ₀))`. This is nonzero whenever `R0' ≠ R0`, and positive when `R0' > R0`. Since `E₁(τ) ≤ e^{−τ}`, the breaking is exponentially weak in the optically thick regime. | `expIntegralE1_strictAntiOn`, `Iso.transitRadiusE1_referenceGauge`, `Iso.transitRadiusE1_gauge_ne`, `Iso.transitRadiusE1_gauge_lt`, `referenceGaugeBrokenByE1` (`E1Gauge.lean`) |
+| **2. Gaussian bands are power-rigid** | **Original statement disproved.** It allowed exponent `r = 0`, and a constant cloud satisfies `κ' = C κ⁰` for any `κ`, so the original definition could never hold. `PowerRigid` now requires `r, C > 0`, which is all the physics uses; the reduction theorem and the λ⁻⁴/λ⁻⁸ counterexample are unchanged. **Corrected statement proved for a single band** (any continuous positive cross-section + grey cloud). The multi-band case is still open; a proof sketch is in the file. | `not_gaussianBandsPowerRigidUnrestricted`, `powerRigid_of_unique`, `gaussianBandsPowerRigid_of_unique` (`GaussianRigidity.lean`) |
+| **1. Spectrum ⇒ density profiles** | **Original statement disproved** for every cross-section set: it allowed a zero-thickness column (`R0 = Rtop`). **Corrected statement** (`R0 < Rtop`, continuous X) is **disproved whenever two species have proportional cross-sections** on the band (moving column between them leaves the extinction unchanged). Still open for non-proportional cross-sections. For one species, the spectrum is a Laplace-type transform of the column-density distribution, so uniqueness is expected only up to rearrangement (e.g. for monotone profiles). | `not_densityProfilesIdentifiable`, `not_densityProfilesIdentifiableCts_of_proportional` (`DensityTargets.lean`); `temperature_identifiable_of_densityIdentifiable` now uses the corrected target |
 
 ## Numerical cross-check (not part of the proofs)
 
@@ -93,6 +89,7 @@ for a hot Jupiter (`H ≈ 434 km`):
   `g` and `m`, no refraction, an opaque surface at `R0`, and truncation at `Rtop`. The profile
   degeneracy needs the first two. Collision-induced absorption or Rayleigh scattering by the
   background breaks it (see `T_eq_of_speciesDensity_eq`).
+- `transitRadiusE1` keeps HK17's `E₁(τ₀)` term but is still taken as a definition.
 
 ## References
 

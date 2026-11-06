@@ -33,26 +33,41 @@ namespace OpenProblems
 
 variable {ι : Type*} [Fintype ι]
 
-/-- **Target 1.** The exact spectrum on the band `S` determines the species number densities on
-the observable column `[R0, Rtop]`. -/
+/-- **Target 1 (original formulation).** The exact spectrum on the band `S` determines the
+species number densities on the observable column `[R0, Rtop]`. **This is false as stated**
+(`not_densityProfilesIdentifiable` in `ExoLean.DensityTargets`), because it allows a
+zero-thickness column `R0 = Rtop`. The corrected target is `DensityProfilesIdentifiableCts`. -/
 def DensityProfilesIdentifiable (σ : ι → ℝ → ℝ) (Rtop : ℝ) (S : Set ℝ) : Prop :=
   ∀ A B : Atmosphere ι, A.WellPosed → B.WellPosed → A.R0 = B.R0 →
     (∀ w ∈ S, A.spectrum σ Rtop w = B.spectrum σ Rtop w) →
     ∀ i, ∀ r ∈ Set.Icc A.R0 Rtop, A.speciesDensity i r = B.speciesDensity i r
 
-/-- **Proved conditional result.** If target 1 holds for `σ`, then for atmospheres with a closed
-composition (no transparent filler) and shared `R0, P0, g, m`, the spectrum determines the
-full temperature profile on the observable column. -/
+/-- **Target 1 (corrected).** As `DensityProfilesIdentifiable`, but for a column of positive
+thickness (`R0 < Rtop`) and continuous mixing-ratio profiles. This rules out
+pointwise modifications, which no integral can see. It is still false for species with
+proportional cross-sections (`not_densityProfilesIdentifiableCts_of_proportional`). -/
+def DensityProfilesIdentifiableCts (σ : ι → ℝ → ℝ) (Rtop : ℝ) (S : Set ℝ) : Prop :=
+  ∀ A B : Atmosphere ι, A.WellPosed → B.WellPosed → A.R0 = B.R0 → A.R0 < Rtop →
+    (∀ i, Continuous (A.X i)) → (∀ i, Continuous (B.X i)) →
+    (∀ w ∈ S, A.spectrum σ Rtop w = B.spectrum σ Rtop w) →
+    ∀ i, ∀ r ∈ Set.Icc A.R0 Rtop, A.speciesDensity i r = B.speciesDensity i r
+
+/-- **Proved conditional result.** If the corrected target 1 holds for `σ`, then for
+atmospheres with continuous, closed compositions (no transparent filler), a column of positive
+thickness, and shared `R0, P0, g, m`, the spectrum determines the full temperature profile on
+the observable column. -/
 theorem temperature_identifiable_of_densityIdentifiable {σ : ι → ℝ → ℝ} {Rtop : ℝ}
-    {S : Set ℝ} (hID : DensityProfilesIdentifiable σ Rtop S) {A B : Atmosphere ι}
+    {S : Set ℝ} (hID : DensityProfilesIdentifiableCts σ Rtop S) {A B : Atmosphere ι}
     (hA : A.WellPosed) (hB : B.WellPosed)
     (hR0 : A.R0 = B.R0) (hP0 : A.P0 = B.P0) (hg : A.g = B.g) (hm : A.m = B.m)
+    (hthick : A.R0 < Rtop)
+    (hcA : ∀ i, Continuous (A.X i)) (hcB : ∀ i, Continuous (B.X i))
     (hXA : ∀ r ∈ Set.Icc A.R0 Rtop, ∑ i, A.X i r = 1)
     (hXB : ∀ r ∈ Set.Icc A.R0 Rtop, ∑ i, B.X i r = 1)
     (hspec : ∀ w ∈ S, A.spectrum σ Rtop w = B.spectrum σ Rtop w) :
     ∀ r ∈ Set.Icc A.R0 Rtop, A.T r = B.T r :=
   Atmosphere.T_eq_of_speciesDensity_eq hA hB hR0 hP0 hg hm hXA hXB
-    (hID A B hA hB hR0 hspec)
+    (hID A B hA hB hR0 hthick hcA hcB hspec)
 
 /-- Gaussian absorption bands `σᵢ(λ) = exp(-((λ - cᵢ)/sᵢ)²)`. -/
 def gaussianBands (c s : ι → ℝ) : ι → ℝ → ℝ := fun i w => exp (-((w - c i) / s i) ^ 2)

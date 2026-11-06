@@ -34,9 +34,12 @@ variable {ι : Type*} [Fintype ι]
 def opacityCone (σ : ι → ℝ → ℝ) : Set (ℝ → ℝ) :=
   {κ | ∃ a : ι → ℝ, ∃ c : ℝ, (∀ i, 0 ≤ a i) ∧ 0 ≤ c ∧ ∀ w, κ w = ∑ i, a i * σ i w + c}
 
-/-- **Power rigidity** of a family of cross-sections on a band `S`. -/
+/-- **Power rigidity** of a family of cross-sections on a band `S`: if a positive power
+`κ^r` (`r > 0`) of a non-constant cone element is proportional (`C > 0`) to a cone element on
+`S`, then `r = 1`. The positivity of `r` and `C` is essential: with `r = 0`, any constant cloud
+`κ' = C` would satisfy `κ' = C κ⁰` (see `not_powerRigidUnrestricted`). -/
 def PowerRigid (σ : ι → ℝ → ℝ) (S : Set ℝ) : Prop :=
-  ∀ κ ∈ opacityCone σ, ∀ κ' ∈ opacityCone σ, ∀ r C : ℝ,
+  ∀ κ ∈ opacityCone σ, ∀ κ' ∈ opacityCone σ, ∀ r C : ℝ, 0 < r → 0 < C →
     (∀ w ∈ S, 0 < κ w) → (∀ w ∈ S, κ' w = C * κ w ^ r) →
     (∃ w₁ ∈ S, ∃ w₂ ∈ S, κ w₁ ≠ κ w₂) → r = 1
 
@@ -57,7 +60,7 @@ theorem scaleHeight_eq_of_powerRigid {σ : ι → ℝ → ℝ} {S : Set ℝ} (hR
     (h : ∀ w ∈ S, p.transitRadius σ w = q.transitRadius σ w) : p.H = q.H := by
   have hHq := hq.H_pos
   have hr := hR (p.opacity σ) (hp.opacity_mem_cone σ) (q.opacity σ) (hq.opacity_mem_cone σ)
-    (p.H / q.H) (exp ((p.level - q.level) / q.H)) hκp ?_ hnc
+    (p.H / q.H) (exp ((p.level - q.level) / q.H)) (div_pos hp.H_pos hHq) (exp_pos _) hκp ?_ hnc
   · rwa [div_eq_one_iff_eq hHq.ne'] at hr
   intro w hw
   have hw' := h w hw
@@ -109,7 +112,7 @@ theorem not_powerRigid_rayleigh_lambda8 :
       fun w => by simp [Fin.sum_univ_two]⟩
     (fun w => w ^ (-8 : ℝ)) ⟨![0, 1], 0, fun i => by fin_cases i <;> simp, le_rfl,
       fun w => by simp [Fin.sum_univ_two]⟩
-    2 1 (fun w hw => rpow_pos_of_pos hw _)
+    2 1 two_pos one_pos (fun w hw => rpow_pos_of_pos hw _)
     (fun w hw => by
       simp only [one_mul]
       rw [← rpow_mul (le_of_lt hw)]

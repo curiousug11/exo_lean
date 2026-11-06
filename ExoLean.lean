@@ -9,3 +9,6 @@ import ExoLean.Identifiability
 import ExoLean.Degeneracies
 import ExoLean.Rigidity
 import ExoLean.OpenProblems
+import ExoLean.E1Gauge
+import ExoLean.GaussianRigidity
+import ExoLean.DensityTargets
