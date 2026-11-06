@@ -30,3 +30,4 @@ open ExoLean
 #print axioms gaussianBandsPowerRigid_of_unique
 #print axioms not_densityProfilesIdentifiable
 #print axioms not_densityProfilesIdentifiableCts_of_proportional
+#print axioms expIntegralE1_le

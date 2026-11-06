@@ -17,7 +17,7 @@ whenever `R0' ≠ R0`. So **every** admissible model breaks the gauge
 *raises* the transit radius (`Iso.transitRadiusE1_gauge_lt`).
 
 Physically: the (R0, P0) degeneracy is exact only in the `τ₀ ≫ 1` limit. Since
-`E₁(τ) ≤ e^{−τ}`, the breaking is exponentially weak there, which is why it is effectively a
+`E₁(τ) ≤ ∫₁^∞ e^{−τt} dt = e^{−τ}/τ`, the breaking is exponentially weak there, which is why it is effectively a
 degeneracy in practice.
 -/
 
@@ -60,6 +60,18 @@ theorem expIntegralE1_strictAntiOn : StrictAntiOn expIntegralE1 (Ioi 0) := by
         (fun t => exp (-a * t) / t - exp (-b * t) / t) ∩ Ioi 1 :=
       fun t ht => ⟨(hpt t ht).ne', ht⟩
     exact lt_of_lt_of_le (by simp [Real.volume_Ioi]) (measure_mono hsub)
+  linarith
+
+/-- Elementary tail bound `E₁(τ) ≤ e^{−τ}/τ` (from `1/t ≤ 1` on `t > 1`). -/
+theorem expIntegralE1_le {τ : ℝ} (hτ : 0 < τ) : expIntegralE1 τ ≤ exp (-τ) / τ := by
+  have hle : expIntegralE1 τ ≤ ∫ t in Ioi (1 : ℝ), exp (-τ * t) := by
+    apply setIntegral_mono_on (integrableOn_E1_integrand hτ) (exp_neg_integrableOn_Ioi 1 hτ)
+      measurableSet_Ioi
+    intro t (ht : 1 < t)
+    exact div_le_self (exp_pos _).le ht.le
+  have heq : ∫ t in Ioi (1 : ℝ), exp (-τ * t) = exp (-τ) / τ := by
+    rw [integral_exp_mul_Ioi (by linarith) 1]
+    rw [mul_one, neg_div, div_neg, neg_neg]
   linarith
 
 namespace Iso

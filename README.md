@@ -66,9 +66,19 @@ analytic layer. `hasDerivAt_pressure` proves that the pressure profile really so
 
 | Target | Outcome | Key theorems |
 |---|---|---|
-| **3. `E₁` breaks the (R0, P0) gauge** | **Proved, for every admissible model.** The gauge shifts R_p by exactly `H·(E₁(τ₀e^{(R0−R0')/H}) − E₁(τ₀))`. This is nonzero whenever `R0' ≠ R0`, and positive when `R0' > R0`. Since `E₁(τ) ≤ e^{−τ}`, the breaking is exponentially weak in the optically thick regime. | `expIntegralE1_strictAntiOn`, `Iso.transitRadiusE1_referenceGauge`, `Iso.transitRadiusE1_gauge_ne`, `Iso.transitRadiusE1_gauge_lt`, `referenceGaugeBrokenByE1` (`E1Gauge.lean`) |
+| **3. `E₁` breaks the (R0, P0) gauge** | **Proved, for every admissible model.** The gauge shifts R_p by exactly `H·(E₁(τ₀e^{(R0−R0')/H}) − E₁(τ₀))`. This is nonzero whenever `R0' ≠ R0`, and positive when `R0' > R0`. Since `E₁(τ) ≤ e^{−τ}/τ`, the breaking is exponentially weak in the optically thick regime. | `expIntegralE1_strictAntiOn`, `Iso.transitRadiusE1_referenceGauge`, `Iso.transitRadiusE1_gauge_ne`, `Iso.transitRadiusE1_gauge_lt`, `referenceGaugeBrokenByE1` (`E1Gauge.lean`) |
 | **2. Gaussian bands are power-rigid** | **Original statement disproved.** It allowed exponent `r = 0`, and a constant cloud satisfies `κ' = C κ⁰` for any `κ`, so the original definition could never hold. `PowerRigid` now requires `r, C > 0`, which is all the physics uses; the reduction theorem and the λ⁻⁴/λ⁻⁸ counterexample are unchanged. **Corrected statement proved for a single band** (any continuous positive cross-section + grey cloud). The multi-band case is still open; a proof sketch is in the file. | `not_gaussianBandsPowerRigidUnrestricted`, `powerRigid_of_unique`, `gaussianBandsPowerRigid_of_unique` (`GaussianRigidity.lean`) |
 | **1. Spectrum ⇒ density profiles** | **Original statement disproved** for every cross-section set: it allowed a zero-thickness column (`R0 = Rtop`). **Corrected statement** (`R0 < Rtop`, continuous X) is **disproved whenever two species have proportional cross-sections** on the band (moving column between them leaves the extinction unchanged). Still open for non-proportional cross-sections. For one species, the spectrum is a Laplace-type transform of the column-density distribution, so uniqueness is expected only up to rearrangement (e.g. for monotone profiles). | `not_densityProfilesIdentifiable`, `not_densityProfilesIdentifiableCts_of_proportional` (`DensityTargets.lean`); `temperature_identifiable_of_densityIdentifiable` now uses the corrected target |
+
+## Paper
+
+`paper/main.pdf` is a write-up of all results, with source in `paper/main.tex` and
+`paper/references.bib`. To rebuild it:
+
+```bash
+python3 paper/figures/make_figures.py          # figures (needs numpy, scipy, matplotlib)
+cd paper && latexmk -pdf main.tex
+```
 
 ## Numerical cross-check (not part of the proofs)
 
