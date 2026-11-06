@@ -1,0 +1,23 @@
+import ExoLean
+open ExoLean
+#print axioms Atmosphere.WellPosed.hasDerivAt_pressure
+#print axioms Atmosphere.temperature_profile_unidentifiable
+#print axioms Atmosphere.isothermal_twin
+#print axioms Atmosphere.exists_inverted_twin
+#print axioms Atmosphere.T_eq_of_speciesDensity_eq
+#print axioms Atmosphere.speciesDensity_of_isothermal_isochemical
+#print axioms Iso.transitRadius_referenceGauge
+#print axioms Iso.transitRadius_normalization
+#print axioms Iso.transitRadius_T_g
+#print axioms Iso.transitRadius_T_m
+#print axioms Iso.transitRadius_fibre
+#print axioms Iso.temperature_identifiable
+#print axioms Iso.radius_identifiable_of_P0
+#print axioms Iso.grey_temperature_unidentifiable
+#print axioms Iso.lecavelier_slope
+#print axioms Iso.powerLaw_slope_degeneracy
+#print axioms Iso.slopeProduct_identifiable
+#print axioms Iso.scaleHeight_eq_of_powerRigid
+#print axioms Iso.rayleigh_lambda8_twin
+#print axioms Iso.not_powerRigid_rayleigh_lambda8
+#print axioms OpenProblems.temperature_identifiable_of_densityIdentifiable
